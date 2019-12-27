@@ -7,6 +7,10 @@ const db = require('./config/mongoose');
 
 // used for session cookie
 const session = require('express-session');
+
+// to store the session information into the database so that every time we restart the server, the users don't get logged out
+const MongoStore = require('connect-mongo')(session);
+
 // we need both passport and passport-local for our authentication purposes
 const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
@@ -34,6 +38,7 @@ app.set('layout extractScripts', true);
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
+// mongo store is used to store the session cookie in the DB
 app.use(session({
     name: 'codeial',
     // ToDo change the secret before deployement in production mode
@@ -44,7 +49,13 @@ app.use(session({
     resave: false,
     cookie: {
         maxAge: (1000 * 60 * 100)
-    }
+    },
+    store: new MongoStore({
+        mongooseConnection: db,
+        autoRemove: 'disabled'
+    }, function(err){
+        console.log(err || 'connect-mongodb setup ok');
+    })
 
 }));
 
