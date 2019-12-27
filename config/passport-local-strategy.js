@@ -12,11 +12,12 @@ passport.use(new LocalStrategy({
             if(err){
                 console.log('Error in finding user --> Passport');
                 // although it takes 2 arguements here we will consider only err
-                return done(err);
+                return done(err); 
             }
 
             if(!user || user.password != password){
                 console.log('Invalid username/password');
+                // first argument is an error
                 return done(null, false);
             }
 
@@ -28,7 +29,7 @@ passport.use(new LocalStrategy({
 // serializing the user to decide which key is to be kept in the cookies
 passport.serializeUser(function(user, done){
     done(null, user.id);
-})
+});
 
 // de-serializing the user from thr key in the cookies
 passport.deserializeUser(function(id, done){

@@ -5,6 +5,12 @@ const expressLayouts = require('express-ejs-layouts');
 const router = require('./routes/index');
 const db = require('./config/mongoose');
 
+// used for session cookie
+const session = require('express-session');
+// we need both passport and passport-local for our authentication purposes
+const passport = require('passport');
+const passportLocal = require('./config/passport-local-strategy');
+
 // for reading and writing into cookies we will be using a package- cookie-parser
 const cookieParser = require('cookie-parser');
 
@@ -24,12 +30,29 @@ app.use(expressLayouts);
 app.set('layout extractStyles', true);
 app.set('layout extractScripts', true);
 
-// use express router
-app.use('/', router);
-
 // Setting up ejs as the view engine
 app.set('view engine', 'ejs');
 app.set('views', './views');
+
+app.use(session({
+    name: 'codeial',
+    // ToDo change the secret before deployement in production mode
+    secret: 'blahsomething',
+    // when the user has not been logged in 
+    saveUninitialized: false,
+    // don't change the cookie information
+    resave: false,
+    cookie: {
+        maxAge: (1000 * 60 * 100)
+    }
+
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// use express router
+app.use('/', router);
 
 app.listen(port, function(err){
     
