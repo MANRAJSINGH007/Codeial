@@ -11,12 +11,27 @@ const session = require('express-session');
 // to store the session information into the database so that every time we restart the server, the users don't get logged out
 const MongoStore = require('connect-mongo')(session);
 
+// For converting the scss and sass files to css
+const sassMiddleware = require('node-sass-middleware');
+
 // we need both passport and passport-local for our authentication purposes
 const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
 
 // for reading and writing into cookies we will be using a package- cookie-parser
 const cookieParser = require('cookie-parser');
+
+// settings for sass middleware
+app.use(sassMiddleware({
+    // from where to pick up the scss files
+    src: './assets/scss',
+    dest: './assets/css',
+    // displaying errors on console while compilation (it will be false when I will be running it in production mode)
+    debug: true,
+    outputStyle: 'extended',
+    // where should my server lookout for css files
+    prefix: '/css'
+}));
 
 // for reading the data sent by post requests
 app.use(express.urlencoded());
