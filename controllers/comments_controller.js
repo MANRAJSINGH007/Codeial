@@ -48,24 +48,6 @@ module.exports.destroy = (req, res) => {
                 Post.findByIdAndUpdate(postId, { $pull: {comments: req.params.id}}, function(err, post) {
                     return res.redirect('back');
                 });
-                // Post.findById(postId, (err, post) => {
-                //     if(err) {
-                //         console.log('Error in connecting with Posts DB');
-                //         return;
-                //     }
-                //     if(!post) {
-                //         console.log('Coressponding npost to which comment belongs does not exist anymore');
-                //         retrun;
-                //     } else {
-                //         for(var i = 0; i < post.comments.length; i++) {
-                //             if(post.comments[i] === req.params.id) {
-                //                 post.comments.splice(i, 1);
-                //                 break;
-                //             }
-                //         }
-                //         return res.redirect('back');
-                //     }
-                // });
             } else {
                 console.log('You are not authorized to delete the comment');
                 return res.redirect('back');
