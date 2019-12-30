@@ -21,6 +21,11 @@ const passportLocal = require('./config/passport-local-strategy');
 // for reading and writing into cookies we will be using a package- cookie-parser
 const cookieParser = require('cookie-parser');
 
+// for flash messages
+const flash = require('connect-flash');
+
+const customMiddleware = require('./config/middleware');
+
 // settings for sass middleware
 app.use(sassMiddleware({
     // from where to pick up the scss files
@@ -79,6 +84,10 @@ app.use(passport.session());
 
 // set up the current user usage
 app.use(passport.setAuthenticatedUser);
+
+// using connect-flash library, it uses session cookies
+app.use(flash());
+app.use(customMiddleware.setFlash);
 
 // use express router
 app.use('/', router);
