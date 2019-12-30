@@ -30,3 +30,46 @@ module.exports.create = (req, res) => {
         }
     });
 };
+
+module.exports.destroy = (req, res) => {
+    Comment.findById(req.params.id, (err, comment) => {
+        if(err) {
+            console.log('Error in connecting with the Comment DB');
+            return;
+        }
+        if(!comment) {
+            console.log('Error in finding the comment: seems like it does not exists');
+            return;
+        } else {
+            if(comment.user == req.user.id) {
+                let postId = comment.post;
+                comment.remove();
+                // finds the post by the postId and updates the array of comments associated with it by removing the comment id
+                Post.findByIdAndUpdate(postId, { $pull: {comments: req.params.id}}, function(err, post) {
+                    return res.redirect('back');
+                });
+                // Post.findById(postId, (err, post) => {
+                //     if(err) {
+                //         console.log('Error in connecting with Posts DB');
+                //         return;
+                //     }
+                //     if(!post) {
+                //         console.log('Coressponding npost to which comment belongs does not exist anymore');
+                //         retrun;
+                //     } else {
+                //         for(var i = 0; i < post.comments.length; i++) {
+                //             if(post.comments[i] === req.params.id) {
+                //                 post.comments.splice(i, 1);
+                //                 break;
+                //             }
+                //         }
+                //         return res.redirect('back');
+                //     }
+                // });
+            } else {
+                console.log('You are not authorized to delete the comment');
+                return res.redirect('back');
+            }
+        }
+    });
+};
