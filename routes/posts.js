@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-
+const passport = require('../config/passport-local-strategy');
 const postsController = require('../controllers/posts_controller');
 
-router.post('/create', require('../config/passport-local-strategy').checkAuthentication, postsController.create);
+router.post('/create', passport.checkAuthentication, postsController.create);
+router.get('/destroy/:id', passport.checkAuthentication, postsController.destroy);
 
 module.exports = router;
