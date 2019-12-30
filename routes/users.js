@@ -7,6 +7,9 @@ const usersController = require('../controllers/users_controllers');
 
 // over here you need to use passport-local-strategy.js from the config file
 router.get('/profile/:id', require('../config/passport-local-strategy').checkAuthentication,usersController.profile);
+router.post('/update/:id', require('../config/passport-local-strategy').checkAuthentication,usersController.update);
+
+
 router.get('/sign-up', usersController.signUp);
 router.get('/sign-in', usersController.signIn);
 router.post('/create', usersController.create);
