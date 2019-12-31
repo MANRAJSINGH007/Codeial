@@ -14,6 +14,7 @@
                     // we will receive some data
                     let newPost = newPostDom(data.data.post);
                     $('#posts-list-container>ul').prepend(newPost);
+                    deletePost($(' .delete-post-button', newPost));
                 },
                 error: function(error){
                     console.log(error.responseText);
@@ -22,15 +23,13 @@
         });
     }
 
-    createPost();
-
     // method to create a post in DOM
     let newPostDom = (post) => {
         // backticks to interpolate strings ES6 feature
         return $(`<li id="post-${post._id}">
         <p>
             <small>
-                <a class="delete-post-button" href="/posts/destroy/${post.id}">Delete </a>
+                <a class="delete-post-button" href="/posts/destroy/${post._id}">Delete </a>
             </small>
                 ${post.content}
             <br>
@@ -51,4 +50,24 @@
         </div>
     </li>`);
     }
+
+    // method to delete a post from dom
+
+    let deletePost = (deleteLink) => {
+        $(deleteLink).click(function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'get',
+                url: $(deleteLink).prop('href'),
+                success: function(data) {
+                    $(`#post-${data.data.post_id}`).remove();
+                }, 
+                error: function(error) {
+                    console.log(error.responseText);
+                }
+            });
+        });
+    }
+
+    createPost();
 }
