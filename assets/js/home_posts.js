@@ -12,6 +12,7 @@
                 data: newPostForm.serialize(), 
                 success: function(data) {
                     // we will receive some data
+                    $('#new-post-form textarea').val('');
                     let newPost = newPostDom(data.data.post, data.data.user.name);
                     $('#posts-list-container>ul').prepend(newPost);
                     deletePost($(' .delete-post-button', newPost));
