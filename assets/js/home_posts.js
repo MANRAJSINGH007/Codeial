@@ -12,7 +12,7 @@
                 data: newPostForm.serialize(), 
                 success: function(data) {
                     // we will receive some data
-                    let newPost = newPostDom(data.data.post);
+                    let newPost = newPostDom(data.data.post, data.data.user.name);
                     $('#posts-list-container>ul').prepend(newPost);
                     deletePost($(' .delete-post-button', newPost));
                 },
@@ -24,7 +24,7 @@
     }
 
     // method to create a post in DOM
-    let newPostDom = (post) => {
+    let newPostDom = (post, userName) => {
         // backticks to interpolate strings ES6 feature
         return $(`<li id="post-${post._id}">
         <p>
@@ -34,7 +34,7 @@
                 ${post.content}
             <br>
             <small>
-                ${post.user.name}
+                ${userName}
             </small>
         </p>
         <div class="post-comments">

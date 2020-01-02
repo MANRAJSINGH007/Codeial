@@ -12,7 +12,10 @@ module.exports.create = async (req, res) => {
             // return some json
             return res.status(200).json({
                 data: {
-                    post: post
+                    post: post,
+                    user: {
+                        name: req.user.name
+                    }
                 },
                 message: 'Post craeted'
             });
