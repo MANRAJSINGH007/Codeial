@@ -17,6 +17,7 @@ const sassMiddleware = require('node-sass-middleware');
 // we need both passport and passport-local for our authentication purposes
 const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
+const passportJWT = require('./config/passport-jwt-strategy');
 
 // for reading and writing into cookies we will be using a package- cookie-parser
 const cookieParser = require('cookie-parser');
