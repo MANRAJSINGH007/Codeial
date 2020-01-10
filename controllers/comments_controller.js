@@ -1,35 +1,35 @@
 const Comment = require('../models/comment');
 const Post = require('../models/post');
+const commentsMailer = require('../mailers/comments_mailer');
 
-module.exports.create = (req, res) => {
-    Post.findById(req.body.post, (err, post) => {
-        if(err){
-            req.flash('error', 'Error in finding the post associated with the comment');
-            return;
-        }
+module.exports.create = async (req, res) => {
+    try {
+        let post = await Post.findById(req.body.post);
         if(!post){
             req.flash('error', 'Error in fetching the post: Seems like the postId is invalid');
             return res.redirect('back');
         }
         if(post){
-            Comment.create({
+            let comment = await Comment.create({
                 content: req.body.content,
                 post: req.body.post,
                 user: req.user._id
-            }, (err, comment) => {
-                // handle error
-                if(err){
-                    req.flash('error', 'Error in trying to create the comment');
-                    return;
-                }
-                // save the changes made to the object after updation
-                post.comments.push(comment);
-                post.save();
-                req.flash('success', 'Comment Added Successfully');
-                return res.redirect('/');
             });
+
+            post.comments.push(comment);
+            // save the changes made to the object after updation
+            post.save();
+
+            comment = await comment.populate('user', 'name email').execPopulate();
+            commentsMailer.newComment(comment);
+            req.flash('success', 'Comment Added Successfully');
+            return res.redirect('/');
+          
         }
-    });
+    } catch(err) {
+        console.log('Error: ', err);
+        return;
+    }
 };
 
 module.exports.destroy = (req, res) => {
